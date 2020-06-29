@@ -4,11 +4,12 @@ from matplotlib.pyplot import plot, draw, show
 from numpy.random import choice
 import pandas as pd
 import time
+import random
+
 
 class World:
 
     def __init__(self):
-
 
         self.nRows = 4
         self.nCols = 4
@@ -17,12 +18,10 @@ class World:
         self.nStates = 16
         self.States = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]
         self.nActions = 4
+        self.Actions = [1, 2, 3, 4]
         self.rewards = np.array([-1] + [-0.04] * 5 + [-1] + [-0.04] * 5 + [1, -1, -1] + [-0.04])
         self.stateInitial = [4]
-        self.observation =[]
-
-
-
+        self.observation = []
 
     def _plot_world(self):
 
@@ -83,9 +82,8 @@ class World:
         plt.title('MDP gridworld', size=16)
         plt.axis("equal")
         plt.axis("off")
-        #plt.show(block=False)
+        # plt.show(block=False)
         plt.show()
-
 
     def plot_value(self, valueFunction):
 
@@ -100,7 +98,8 @@ class World:
         for i in range(nCols):
             for j in range(nRows, 0, -1):
                 if k + 1 not in stateHoles + stateGoal:
-                    plt.text(i + 0.5, j - 0.5, str(self._truncate(valueFunction[k], 3)), fontsize=12, horizontalalignment='center', verticalalignment='center')
+                    plt.text(i + 0.5, j - 0.5, str(self._truncate(valueFunction[k], 3)), fontsize=12,
+                             horizontalalignment='center', verticalalignment='center')
                 k += 1
         plt.title('MDP gridworld', size=16)
         plt.axis("equal")
@@ -144,13 +143,12 @@ class World:
         k = 0
         for i in range(nCols):
             for j in range(nRows, 0, -1):
-                plt.text(i + 0.25, j - 0.25, str(states[k]), fontsize=16, horizontalalignment='right', verticalalignment='bottom')
+                plt.text(i + 0.25, j - 0.25, str(states[k]), fontsize=16, horizontalalignment='right',
+                         verticalalignment='bottom')
                 k += 1
         plt.axis("equal")
         plt.axis("off")
         plt.show()
-
-
 
     def get_nrows(self):
 
@@ -176,15 +174,14 @@ class World:
 
         return self.nActions
 
-
     def get_transition_model(self, p=0.8):
         nstates = self.nStates
         nrows = self.nRows
         holes_index = self.stateHoles
         goal_index = self.stateGoal
         terminal_index = holes_index + goal_index
-        #actions = ["1", "2", "3", "4"]
-        actions = [1, 2, 3, 4]     #I changed str to int
+        # actions = ["1", "2", "3", "4"]
+        actions = [1, 2, 3, 4]  # I changed str to int
         transition_models = {}
         for action in actions:
             transition_model = np.zeros((nstates, nstates))
@@ -255,11 +252,11 @@ class World:
         prob = {}
         done = False
         transition_models = self.get_transition_model(0.8)
-        #print('inside')
-        #print(state)
-        #print(action)
+        # print('inside')
+        # print(state)
+        # print(action)
         prob = transition_models[action].loc[state, :]
-        #print(transition_models[action].loc[state, :])
+        # print(transition_models[action].loc[state, :])
         s = choice(self.States, 1, p=prob)
         next_state = s[0]
         reward = self.rewards[next_state - 1]
@@ -270,7 +267,7 @@ class World:
         return next_state, reward, done
 
     def reset(self, *args):
-    #def reset(self):
+        # def reset(self):
         if not args:
             observation = self.stateInitial
         else:
@@ -278,7 +275,7 @@ class World:
             while not (observation):
                 observation = np.setdiff1d(choice(self.States), self.stateHoles + self.stateGoal)
         self.observation = observation
-        #return observation
+        return observation[0]
 
     def render(self):
 
@@ -289,40 +286,38 @@ class World:
         stateHoles = self.stateHoles
         stateGoal = self.stateGoal
 
-        observation = self.observation #observation
+        observation = self.observation  # observation
         state = observation[0]
 
-        #state = 3
+        # state = 3
 
-        J = nRows - (state-1) % nRows -1
-        I = int((state-1)/nCols)
+        J = nRows - (state - 1) % nRows - 1
+        I = int((state - 1) / nCols)
 
-
-        circle = plt.Circle((I+0.5,J+0.5), 0.28, color='black')
+        circle = plt.Circle((I + 0.5, J + 0.5), 0.28, color='black')
         fig = plt.gcf()
         ax = fig.gca()
         ax.add_artist(circle)
 
         self.plot()
 
-        #plt.ion()
-        #plt.show()
-        #plt.draw()
-        #plt.pause(0.5)
-        #plt.ion()
-        #plt.show(block=False)
-        #time.sleep(1)
+        # plt.ion()
+        # plt.show()
+        # plt.draw()
+        # plt.pause(0.5)
+        # plt.ion()
+        # plt.show(block=False)
+        # time.sleep(1)
         # nRows = self.nRows
         # nCols = self.nCols
         # stateHoles = self.stateHoles
         # stateGoal = self.stateGoal
 
+        # print(state)
 
-        #print(state)
-
-        #circle = plt.Circle((0.5, 0.5), 0.1, color='black')
-        #fig, ax = plt.subplots()
-        #ax.add_artist(circle)
+        # circle = plt.Circle((0.5, 0.5), 0.1, color='black')
+        # fig, ax = plt.subplots()
+        # ax.add_artist(circle)
 
         # k = 0
         # for i in range(nCols):
@@ -332,10 +327,6 @@ class World:
         #                      horizontalalignment='center', verticalalignment='center')
         #         k += 1
 
-
-
-
-
     def close(self):
         plt.pause(0.5)
         plt.close()
@@ -343,3 +334,67 @@ class World:
     def show(self):
         plt.ion()
         plt.show()
+
+    def loop_of_algorithm(self, num_episodes, alpha, GLIE, gamma, update_func):
+        # initialization of Q function
+        Q = {}
+        for s in self.States:
+            for a in self.Actions:
+                Q[(s, a)] = 0
+
+        for i in range(num_episodes):
+            print('\r%s out of %s' % (i, num_episodes), end='')
+            epsilon = GLIE(i, num_episodes)
+            state = self.reset()
+            action = random.choice(self.Actions) if random.random() > epsilon else np.argmax(
+                [Q[(state, a)] for a in self.Actions]) + 1
+            t = 0
+            done = False
+            while not done:
+                next_state, reward, done = self.step(action)
+                next_action = random.choice(self.Actions) if random.random() > epsilon else np.argmax(
+                    [Q[(next_state, a)] for a in self.Actions]) + 1
+                # Q(St, At) ← Q(St, At) + α(Rt+1 + γQ(St+1, At+1) − Q(St, At))
+                Q[(state, action)] = update_func(Q, state, action,
+                                                 alpha, reward, gamma, next_state, next_action)
+                # Q[(state, action)] = Q[(state, action)] + alpha * (
+                #             reward + gamma * Q[(next_state, next_action)] - Q[(state, action)])
+
+                t += 1
+                state = next_state
+                action = next_action
+
+                if done:
+                    # print("Episode finished after {} timesteps".format(t + 1))
+                    break
+
+        return Q
+
+
+    def sarsa(self, num_episodes, alpha, GLIE, gamma):
+
+        def update_sarsa(Q, state, action, alpha, reward, gamma, next_state, next_action):
+            return Q[(state, action)] + alpha * (reward + gamma * Q[(next_state, next_action)] - Q[(state, action)])
+
+        return self.loop_of_algorithm(num_episodes, alpha, GLIE, gamma, update_sarsa)
+
+    def plot_actionValues(self, Q):
+        values = []
+        for state in self.States:
+            max_value = Q[(state, self.Actions[0])]
+            for action in self.Actions:
+                new_value = Q[(state, action)]
+                if max_value < new_value:
+                    max_value = new_value
+            values.append(max_value)
+        self.plot_value(values)
+        # return values
+
+    def Qlearning(self, num_episodes, alpha, GLIE, gamma):
+
+        def update_Qlearning(Q, state, action, alpha, reward, gamma, next_state, next_action):
+            # Q(St, At) ← Q(St, At) + α(Rt+1 + γ maxa Q(St+1, a) − Q(St, At))
+            max_action_value = max([Q[(next_state, a)] for a in self.Actions])
+            return Q[(state, action)] + alpha * (reward + gamma * max_action_value - Q[(state, action)])
+
+        return self.loop_of_algorithm(num_episodes, alpha, GLIE, gamma, update_Qlearning)
