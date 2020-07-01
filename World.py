@@ -5,6 +5,7 @@ from numpy.random import choice
 import pandas as pd
 import time
 import random
+from collections import deque
 
 
 class World:
@@ -335,7 +336,18 @@ class World:
         plt.ion()
         plt.show()
 
+    def epsilon_greedy(self, epsilon, Q, state):
+        action = random.choice(self.Actions) if random.random() < epsilon else np.argmax(
+            [Q[(state, a)] for a in self.Actions]) + 1
+        return action
+
     def loop_of_algorithm(self, num_episodes, alpha, GLIE, gamma, update_func):
+        average_on_last = 500
+        total_rewards = []
+        average_list = deque(maxlen=average_on_last)
+        len_of_good_paths = []
+        average_list_len_path = deque(maxlen=average_on_last)
+        last_len = 0
         # initialization of Q function
         Q = {}
         for s in self.States:
@@ -343,37 +355,46 @@ class World:
                 Q[(s, a)] = 0
 
         for i in range(num_episodes):
-            print('\r%s out of %s' % (i, num_episodes), end='')
+            total_reward = 0
+            print('\r%s out of %s' % (i + 1, num_episodes), end='')
             epsilon = GLIE(i, num_episodes)
             state = self.reset()
-            action = random.choice(self.Actions) if random.random() > epsilon else np.argmax(
-                [Q[(state, a)] for a in self.Actions]) + 1
+            action = self.epsilon_greedy(epsilon, Q, state)
             t = 0
             done = False
             while not done:
                 next_state, reward, done = self.step(action)
-                next_action = random.choice(self.Actions) if random.random() > epsilon else np.argmax(
-                    [Q[(next_state, a)] for a in self.Actions]) + 1
-                # Q(St, At) ← Q(St, At) + α(Rt+1 + γQ(St+1, At+1) − Q(St, At))
+                next_action = self.epsilon_greedy(epsilon, Q, next_state)
+
                 Q[(state, action)] = update_func(Q, state, action,
                                                  alpha, reward, gamma, next_state, next_action)
-                # Q[(state, action)] = Q[(state, action)] + alpha * (
-                #             reward + gamma * Q[(next_state, next_action)] - Q[(state, action)])
 
                 t += 1
                 state = next_state
                 action = next_action
+                total_reward += reward
 
                 if done:
                     # print("Episode finished after {} timesteps".format(t + 1))
+                    # ----------- GRAPHS ----------- #
+                    average_list.append(total_reward)
+                    total_rewards.append(np.mean(average_list))
+
+                    last_len = t+1 if reward == 1 else last_len
+                    average_list_len_path.append(last_len)
+                    len_of_good_paths.append(np.mean(average_list_len_path))
+                    # len_of_good_paths.append(last_len)
+
                     break
-
-        return Q
-
+        print()
+        return Q, total_rewards, len_of_good_paths
 
     def sarsa(self, num_episodes, alpha, GLIE, gamma):
 
+        print('---# SARSA algorithm #---')
+
         def update_sarsa(Q, state, action, alpha, reward, gamma, next_state, next_action):
+            # Q(St, At) ← Q(St, At) + α(Rt+1 + γQ(St+1, At+1) − Q(St, At))
             return Q[(state, action)] + alpha * (reward + gamma * Q[(next_state, next_action)] - Q[(state, action)])
 
         return self.loop_of_algorithm(num_episodes, alpha, GLIE, gamma, update_sarsa)
@@ -391,6 +412,8 @@ class World:
         # return values
 
     def Qlearning(self, num_episodes, alpha, GLIE, gamma):
+
+        print('---# Q-learning algorithm #---')
 
         def update_Qlearning(Q, state, action, alpha, reward, gamma, next_state, next_action):
             # Q(St, At) ← Q(St, At) + α(Rt+1 + γ maxa Q(St+1, a) − Q(St, At))
