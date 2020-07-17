@@ -99,6 +99,7 @@ if __name__ == "__main__":
 
     # env.plot_actionValues(Q)
 
+    # pickle
     # Q = pickle.load(open("sarsa.p", "rb"))
 
     # env.policy_evaluation(Q, 2000, alpha=0.1, gamma=0.9)
