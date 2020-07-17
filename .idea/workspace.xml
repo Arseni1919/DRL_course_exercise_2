@@ -2,17 +2,12 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="6466b5f2-5d28-4c5c-b729-76648bbf57ee" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/317377372_ex_2_course_DRL.zip" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Assignment_2_report.docx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Assignment_2_report.pdf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/results/Q_learing_GLIE_2.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/results/Q_learning_actionValues.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/results/SARSA_GLIE_2.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/results/SARSA_actionValues.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sarsa.p" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/q_learning.p" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/317377372_ex_2_course_DRL.zip" beforeDir="false" afterPath="$PROJECT_DIR$/317377372_ex_2_course_DRL.zip" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assignment_2_report.docx" beforeDir="false" afterPath="$PROJECT_DIR$/Assignment_2_report.docx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assignment_2_report.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/Assignment_2_report.pdf" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/World.py" beforeDir="false" afterPath="$PROJECT_DIR$/World.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/drafts.py" beforeDir="false" afterPath="$PROJECT_DIR$/drafts.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -152,7 +147,21 @@
       <option name="project" value="LOCAL" />
       <updated>1593583896703</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="graphs">
+      <created>1594985710973</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1594985710973</updated>
+    </task>
+    <task id="LOCAL-00003" summary="final checks">
+      <created>1594985746711</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1594985746711</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -171,6 +180,7 @@
   <component name="VcsManagerConfiguration">
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
     <MESSAGE value="graphs" />
-    <option name="LAST_COMMIT_MESSAGE" value="graphs" />
+    <MESSAGE value="final checks" />
+    <option name="LAST_COMMIT_MESSAGE" value="final checks" />
   </component>
 </project>

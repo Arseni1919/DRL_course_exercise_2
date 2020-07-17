@@ -366,6 +366,15 @@ class World:
         return np.argmax([Q[(state, a)] for a in self.Actions]) + 1
 
     def loop_of_algorithm(self, num_episodes, alpha, GLIE, gamma, update_func):
+        """
+        Main Loop of both algorithms - helps to not to duplicate code
+        :param num_episodes:
+        :param alpha:
+        :param GLIE:
+        :param gamma:
+        :param update_func: depends on the algorithm
+        :return:
+        """
         average_on_last = 500
         total_rewards = []
         average_list = deque(maxlen=average_on_last)

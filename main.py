@@ -89,7 +89,7 @@ if __name__ == "__main__":
     # ------------------------------------------------------------------------------------------------ #
     # ------------------------------------------------------------------------------------------------ #
     Q, total_rewards_sarsa, len_paths = env.sarsa(num_episodes=2000, alpha=0.05, GLIE=GLIE_6, gamma=0.9)
-    # Q, total_rewards_q_lrng, len_paths = env.Qlearning(num_episodes=2000, alpha=0.01, GLIE=GLIE_2, gamma=0.9)
+    # Q, total_rewards_q_lrng, len_paths = env.Qlearning(num_episodes=100000, alpha=0.01, GLIE=GLIE_2, gamma=0.9)
     # ------------------------------------------------------------------------------------------------ #
     # ------------------------------------------------------------------------------------------------ #
     # pickle.dump(Q, open("sarsa.p", "wb"))
@@ -101,6 +101,11 @@ if __name__ == "__main__":
 
     # pickle
     # Q = pickle.load(open("sarsa.p", "rb"))
+    # Q = pickle.load(open("q_learning.p", "rb"))
+    # pol = np.array([[np.argmax([Q[(s+1, 1)], Q[(s+1, 2)], Q[(s+1, 3)], Q[(s+1, 4)]]) + 1] for s in range(env.nStates)])
+    # env.plot_policy(pol)
+    # values = [np.max([Q[(s+1, 1)], Q[(s+1, 2)], Q[(s+1, 3)], Q[(s+1, 4)]]) for s in range(env.nStates)]
+    # env.plot_value(values)
 
     # env.policy_evaluation(Q, 2000, alpha=0.1, gamma=0.9)
     # plt.plot(total_rewards_q_lrng)
