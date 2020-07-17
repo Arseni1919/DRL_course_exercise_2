@@ -8,6 +8,27 @@ import random
 from collections import deque
 
 
+def calculate_discounted_rewards(rewards, gamma):
+    discounted_rewards = []
+    rewards.reverse()
+    curr_sum = 0
+    for indx in range(len(rewards)):
+        curr_sum = curr_sum + (gamma**indx) * rewards[indx]
+        discounted_rewards.append(curr_sum)
+
+    rewards.reverse()
+    discounted_rewards.reverse()
+    return discounted_rewards
+
+
+def is_first_visit(indx, states):
+    state = states[indx]
+    for curr_indx, curr_state in enumerate(states):
+        if curr_state == state:
+            return curr_indx == indx
+    return ValueError()
+
+
 class World:
 
     def __init__(self):
@@ -341,6 +362,9 @@ class World:
             [Q[(state, a)] for a in self.Actions]) + 1
         return action
 
+    def greedy_action(self, Q, state):
+        return np.argmax([Q[(state, a)] for a in self.Actions]) + 1
+
     def loop_of_algorithm(self, num_episodes, alpha, GLIE, gamma, update_func):
         average_on_last = 500
         total_rewards = []
@@ -400,16 +424,27 @@ class World:
         return self.loop_of_algorithm(num_episodes, alpha, GLIE, gamma, update_sarsa)
 
     def plot_actionValues(self, Q):
-        values = []
-        for state in self.States:
-            max_value = Q[(state, self.Actions[0])]
-            for action in self.Actions:
-                new_value = Q[(state, action)]
-                if max_value < new_value:
-                    max_value = new_value
-            values.append(max_value)
-        self.plot_value(values)
-        # return values
+        special_states = self.stateHoles + self.stateGoal
+        self._plot_world()
+        k = 1
+        for i in range(self.nCols):
+            for j in range(self.nRows, 0, -1):
+                if k not in special_states:
+                    plt.text(i + 0.5, j - 0.2, str(self._truncate(Q[k, 1], 3)), fontsize=8,
+                             horizontalalignment='center', verticalalignment='center')
+                    plt.text(i + 0.8, j - 0.5, str(self._truncate(Q[k, 2], 3)), fontsize=8,
+                             horizontalalignment='center', verticalalignment='center')
+                    plt.text(i + 0.5, j - 0.8, str(self._truncate(Q[k, 3], 3)), fontsize=8,
+                             horizontalalignment='center', verticalalignment='center')
+                    plt.text(i + 0.2, j - 0.5, str(self._truncate(Q[k, 4], 3)), fontsize=8,
+                             horizontalalignment='center', verticalalignment='center')
+                    plt.plot([i, i + 1], [j, j - 1], c='k', lw=1, ls='dotted')
+                    plt.plot([i, i + 1], [j - 1, j], c='k', lw=1, ls='dotted')
+                k += 1
+        plt.title('Action-Values Grid World', size=16)
+        plt.axis("equal")
+        plt.axis("off")
+        plt.show()
 
     def Qlearning(self, num_episodes, alpha, GLIE, gamma):
 
@@ -421,3 +456,49 @@ class World:
             return Q[(state, action)] + alpha * (reward + gamma * max_action_value - Q[(state, action)])
 
         return self.loop_of_algorithm(num_episodes, alpha, GLIE, gamma, update_Qlearning)
+
+    def choose_state(self):
+        special_states = self.stateHoles + self.stateGoal
+        curr_state = random.randint(0, 15)
+        while True:
+            if curr_state + 1 in special_states:
+                break
+            curr_state = random.randint(0, 15)
+        return curr_state
+
+    def policy_evaluation(self, Q, num_of_episodes, alpha, gamma=0.9):
+        """
+        Check the values of each cell
+        :param Q:
+        :param num_of_episodes:
+        :param alpha:
+        :param gamma:
+        :return:
+        """
+
+        # numVisitsFunction = [0 for i in range(self.nStates)]
+        valueFunction = [0 for i in range(self.nStates)]
+
+        for i in range(num_of_episodes):
+            print('\r%s out of %s' % (i + 1, num_of_episodes), end='')
+            # states = []
+            # rewards = []
+            done = False
+            state = self.reset()
+
+            while not done:
+                # states.append(state - 1)
+                action = self.greedy_action(Q, state)
+                next_state, reward, done = self.step(action)
+                valueFunction[state - 1] = valueFunction[state - 1] + alpha * (reward + gamma * valueFunction[next_state - 1] - valueFunction[state - 1])
+                # rewards.append(reward)
+                state = next_state
+
+            # discounted_rewards = calculate_discounted_rewards(rewards, gamma)
+            # for indx in range(len(states)):
+            #     if is_first_visit(indx, states):
+            #         numVisitsFunction[states[indx]] += 1
+            #         val_of_state = valueFunction[states[indx]]
+            #         valueFunction[states[indx]] = val_of_state + (1.0/numVisitsFunction[states[indx]])*(discounted_rewards[indx] - val_of_state)
+
+        self.plot_value(valueFunction)
